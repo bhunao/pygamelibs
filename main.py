@@ -4,16 +4,7 @@ import pygame
 from pygame.locals import *
 from pygame.sprite import Group, Sprite
 from pygame.surface import Surface
-
-
-def draw_text(_screen, text, pos, size=15, color=(255, 255, 255), bold=False):
-    font = pygame.font.SysFont("Arial", size, bold)
-    font.set_bold(True)
-    text = font.render(str(text), True, color)
-    text_rect = text.get_rect()
-    text_rect.center = pos
-    _screen.blit(text, text_rect)
-    return text_rect
+from helper.functions import draw_text
 
 
 class App:
