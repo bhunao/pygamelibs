@@ -16,8 +16,9 @@ class Screen:
 
         self.group = pygame.sprite.Group()
         # self.sprite = Sprite(self.group)
-        self.sprite = GridSprite()
-        self.sprite.add(self.group)
+        self.sprite = GridSprite(groups=self.group)
+        # self.sprite.add(self.group)
+        self.sprite.move_to_pos(5, 5)
     
     def play(self):
         while 1:
@@ -34,16 +35,11 @@ class Screen:
                         pygame.quit()
                         exit()
 
-            x = randint(-1, 1)
-            y = randint(-1, 1)
-            # self.sprite.move(x=x, y=y)
-            self.sprite.move_to_pos(1, 1)
-
             self.group.draw(self.screen)
             self.group.update()
 
             pygame.display.flip()
-            self.clock.tick(10)
+            self.clock.tick(30)
 
 if __name__ == "__main__":
     Screen().play()
