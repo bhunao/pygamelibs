@@ -15,9 +15,7 @@ class Screen:
         self.clock = pygame.time.Clock()
 
         self.group = pygame.sprite.Group()
-        # self.sprite = Sprite(self.group)
         self.sprite = GridSprite(groups=self.group)
-        # self.sprite.add(self.group)
         self.sprite.move_to_pos(5, 5)
     
     def play(self):
