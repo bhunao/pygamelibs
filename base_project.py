@@ -1,3 +1,4 @@
+from random import randint
 import sys
 import pygame
 
@@ -33,7 +34,10 @@ class Screen:
                         pygame.quit()
                         exit()
 
-            self.sprite.move(x=1)
+            x = randint(-1, 1)
+            y = randint(-1, 1)
+            # self.sprite.move(x=x, y=y)
+            self.sprite.move_to_pos(1, 1)
 
             self.group.draw(self.screen)
             self.group.update()
