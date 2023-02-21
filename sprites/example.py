@@ -24,11 +24,11 @@ class GridSprite(Sprite):
         self.size = Vector2(size)
         self.image = Surface(self.size)
         box = Rect(0, 0, self.size.x, self.size.y)
-        rect(self.image, color, box)
+        self.image.fill(color)
+        # rect(self.image, color, box)
         if border_color:
             rect(self.image, (255, 125, 125), box, 5)
         
-        # self.image.fill(color)
         self.rect = self.image.get_rect()
 
     def move(self, x:int = 0, y: int = 0) -> None:
