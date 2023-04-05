@@ -40,15 +40,7 @@ system = System()
 player = Entity(groups=system)
 player.move(5, 5)
 
-n_times = 1_000_000
-player.rect.center = 0, 0
-print('System::move', timeit.timeit(lambda: System.move(player, 1, 1), number=n_times))
-player.rect.center = 0, 0
-print('player::move', timeit.timeit(lambda: player.move(1, 1), number=n_times))
-player.rect.center = 0, 0
-print('func::move  ', timeit.timeit(lambda: player.move(1, 1), number=n_times))
-player.rect.center = 0, 0
-print('+'*50)
+n_times = 100_000_000
     
 while 1:
     # background
@@ -76,6 +68,15 @@ while 1:
     if keys[pygame.K_DOWN]:
         mov[1] += 1
     
+    player.rect.center = 0, 0
+    print('System::move', timeit.timeit(lambda: System.move(player, 1, 1), number=n_times))
+    player.rect.center = 0, 0
+    print('player::move', timeit.timeit(lambda: player.move(1, 1), number=n_times))
+    player.rect.center = 0, 0
+    print('func::move  ', timeit.timeit(lambda: player.move(1, 1), number=n_times))
+    player.rect.center = 0, 0
+    print('+'*50)
+
     System.move(player, *mov)
     system.draw(screen)
     system.update()
