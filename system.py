@@ -45,7 +45,7 @@ def main():
     s = System(down_scale_screen)
     p = Entity()
 
-    while 1:
+    while True:
         down_scale_screen.fill("gray")
 
         for event in pygame.event.get():
