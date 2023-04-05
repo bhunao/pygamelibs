@@ -76,7 +76,6 @@ while 1:
     if keys[pygame.K_DOWN]:
         mov[1] += 1
     
-    
     System.move(player, *mov)
     system.draw(screen)
     system.update()
