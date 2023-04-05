@@ -27,14 +27,14 @@ class System(ABC):
         return True
 
     @staticmethod
-    def move(entity: Entity, pos: list[int, int]) -> bool:
+    def move(entity: Entity, pos: list[int]) -> bool:
         entity.pos[0] += pos[0]
         entity.pos[1] += pos[1]
         return True
 
 def main():
     init()
-    UPSCALE = 2
+    UPSCALE = 5
     WIDTH = config.WIDTH / UPSCALE
     HEIGHT = config.HEIGHT / UPSCALE
 
@@ -42,7 +42,7 @@ def main():
     down_scale_screen = Surface((WIDTH, HEIGHT))
     clock = Clock()
 
-    s = System(screen)
+    s = System(down_scale_screen)
     p = Entity()
 
     while 1:
@@ -63,6 +63,6 @@ def main():
         scaled_win = scale(down_scale_screen, (WIDTH*UPSCALE, HEIGHT*UPSCALE))
         screen.blit(scaled_win, (0, 0))
         pygame.display.flip()
-        clock.tick(30)
+        clock.tick(15)
 
 main()
