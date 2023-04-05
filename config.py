@@ -6,3 +6,8 @@ configs = {
         "background-color": "gray"
     }
 }
+
+NAME = 'example project'
+WIDTH = 600
+HEIGHT = 800
+BACKGROUND_COLOR = 'gray'
