@@ -8,8 +8,8 @@ from config import configs
 class Screen:
     def __init__(self) -> None:
         pygame.init()
-        height = configs["screen"]["width"]
-        width = configs["screen"]["height"]
+        height = configs["screen"]["height"]
+        width = configs["screen"]["width"]
         self.screen = pygame.display.set_mode((width, height))
         self.clock = pygame.time.Clock()
 
