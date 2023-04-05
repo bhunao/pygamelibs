@@ -8,6 +8,6 @@ configs = {
 }
 
 NAME = 'example project'
-WIDTH = 600
-HEIGHT = 800
+WIDTH = 800
+HEIGHT = 600
 BACKGROUND_COLOR = 'gray'
