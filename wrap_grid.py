@@ -1,9 +1,8 @@
 import random
-import config
 
 from typing import Dict, Tuple
 
-from pygame import Color, Surface, init
+from pygame import Color, Surface
 
 from constructor import constructor
 
@@ -18,17 +17,6 @@ class System:
         self.create('red', 5)
         return self
 
-    @classmethod
-    def self_start(cls, pygame_wrapper):
-        init()
-        UPSCALE = 10
-        WIDTH = config.WIDTH / UPSCALE
-        HEIGHT = config.HEIGHT / UPSCALE
-
-        down_scale_screen = Surface((WIDTH, HEIGHT))
-        self = cls.__init__(down_scale_screen)
-        pygame_wrapper(self)
-
     def __init__(self, surface) -> None:
         self.surface = surface
 
@@ -38,13 +26,13 @@ class System:
             for __ in range(5):
                 pos = random.randint(0, max_x), random.randint(0, max_y)
                 if self.entities.get(pos) is None:
-                    break # retry 5 times
+                    break  # retry 5 times
             self.entities[pos] = entity
 
     def draw(self, pos, color) -> None:
         self.surface.set_at(pos, color)
 
-    def move(self, pos: position, new_pos: position, entity: Color) -> position:
+    def move(self, pos: position, new_pos: position) -> position:
         min_point = 0, 0
         max_point = self.surface.get_size()
         if self.entities.get(new_pos) is None:
@@ -61,12 +49,13 @@ class System:
                 y = min_y
             return x, y
         return pos
-    
+
     def update(self) -> None:
         new_dict = dict()
         for pos, entity in self.entities.items():
-            new_pos = pos[0] + random.randint(-1, 1), pos[1] + random.randint(-1, 1)
-            pos = self.move(pos, new_pos, entity)
+            new_pos = pos[0] + \
+                random.randint(-1, 1), pos[1] + random.randint(-1, 1)
+            pos = self.move(pos, new_pos)
             new_dict[pos] = entity
             self.draw(pos, entity)
         self.entities = new_dict
