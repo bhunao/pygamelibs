@@ -1,5 +1,4 @@
-from constructor import constructor
-from wrap_grid import System
+from builder import Builders, constructor
 
 if __name__ == '__main__':
-    constructor(System)()
+    constructor(Builders.Default)()

@@ -3,18 +3,21 @@ import random
 from typing import Dict, Tuple
 
 from pygame import Color, Surface
+from pygame import Rect, draw
 
-from constructor import constructor
+from config import position
+from systems.base_system import System
 
-position = Tuple[int, int]
 
 
-class System:
+class DefaultSystem(System):
     entities: Dict[Tuple[int], Color] = dict()
     surface: Surface
 
     def start(self):
-        self.create('red', 5)
+        entity = Rect(0, 0, 50, 50)
+        # TODO: fix create only drawing 1 entity for some reason
+        self.create(entity, 5)
         return self
 
     def __init__(self, surface) -> None:
@@ -27,10 +30,12 @@ class System:
                 pos = random.randint(0, max_x), random.randint(0, max_y)
                 if self.entities.get(pos) is None:
                     break  # retry 5 times
+            entity.center = pos
+            print(pos)
             self.entities[pos] = entity
 
-    def draw(self, pos, color) -> None:
-        self.surface.set_at(pos, color)
+    def draw(self, color, entity) -> None:
+        draw.rect(self.surface, color, entity)
 
     def move(self, pos: position, new_pos: position) -> position:
         min_point = 0, 0
@@ -57,9 +62,5 @@ class System:
                 random.randint(-1, 1), pos[1] + random.randint(-1, 1)
             pos = self.move(pos, new_pos)
             new_dict[pos] = entity
-            self.draw(pos, entity)
+            self.draw('orange', entity)
         self.entities = new_dict
-
-
-if __name__ == '__main__':
-    constructor(System)()
