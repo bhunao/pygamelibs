@@ -9,7 +9,6 @@ from config import position
 from systems.base_system import System
 
 
-
 class DefaultSystem(System):
     entities: Dict[Tuple[int], Color] = dict()
     surface: Surface
