@@ -5,8 +5,6 @@ from systems.constructor import default_builder, wrap_grid_builder
 from systems.wrap_grid import WrapGridSystem
 
 
-
-
 class Builders(Enum):
     Default = default_builder, DefaultSystem
     WrapGrid = wrap_grid_builder, WrapGridSystem
