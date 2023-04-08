@@ -1,8 +1,6 @@
-from enum import Enum
+import random
 import sys
 import pygame
-
-from config import WIDTH, HEIGHT, UPSCALE
 
 from pygame import display, Surface, init
 from pygame.time import Clock
@@ -46,12 +44,13 @@ def default_builder(system, width, height, upscale):
     height = height / upscale
 
     screen = display.set_mode((width*upscale, height*upscale))
+    in_screen = Surface(screen.get_size())
     clock = Clock()
 
-    system = system(screen).start()
+    _sys = system(in_screen).start()
 
     while True:
-        screen.fill("gray")
+        in_screen.fill("darkgray")
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
@@ -62,7 +61,7 @@ def default_builder(system, width, height, upscale):
                     pygame.quit()
                     exit()
 
-        system.update()
-
+        _sys.update()
+        screen.blit(in_screen, (0,0))
         pygame.display.flip()
         clock.tick(15)

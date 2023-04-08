@@ -10,33 +10,36 @@ from systems.base_system import System
 
 
 class DefaultSystem(System):
-    entities: Dict[Tuple[int], Color] = dict()
+    entities: Dict[Tuple[int, int], Color]
     surface: Surface
-
-    def start(self):
-        entity = Rect(0, 0, 50, 50)
-        # TODO: fix create only drawing 1 entity for some reason
-        self.create(entity, 5)
-        return self
 
     def __init__(self, surface) -> None:
         self.surface = surface
+        self.entities = dict()
 
-    def create(self, entity, n=1):
+    def start(self):
+        style = {
+            "rect": Rect(0, 0, 50, 50),
+            "color": "purple",
+            "border_radius": 10
+        }
+        self.create(5, **style)
+        return self
+
+    def create(self, n=1, **style):
         max_x, max_y = self.surface.get_size()
         for _ in range(n):
             for __ in range(5):
                 pos = random.randint(0, max_x), random.randint(0, max_y)
                 if self.entities.get(pos) is None:
                     break  # retry 5 times
-            entity.center = pos
-            print(pos)
-            self.entities[pos] = entity
+            style["rect"].center = pos
+            self.entities[pos] = style
 
-    def draw(self, color, entity) -> None:
-        draw.rect(self.surface, color, entity)
+    def draw(self, **style) -> None:
+        draw.rect(self.surface, **style)
 
-    def move(self, pos: position, new_pos: position) -> position:
+    def move(self, pos: position, new_pos: position, rect: Rect) -> position:
         min_point = 0, 0
         max_point = self.surface.get_size()
         if self.entities.get(new_pos) is None:
@@ -51,15 +54,16 @@ class DefaultSystem(System):
                 y = max_y
             elif y > max_y:
                 y = min_y
-            return x, y
+            pos = x, y
+        rect.center = pos
         return pos
 
     def update(self) -> None:
         new_dict = dict()
-        for pos, entity in self.entities.items():
+        for pos, style in self.entities.items():
             new_pos = pos[0] + \
                 random.randint(-1, 1), pos[1] + random.randint(-1, 1)
-            pos = self.move(pos, new_pos)
-            new_dict[pos] = entity
-            self.draw('orange', entity)
+            pos = self.move(pos, new_pos, style["rect"])
+            new_dict[pos] = style
+            self.draw(**style)
         self.entities = new_dict
