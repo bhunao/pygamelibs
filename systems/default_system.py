@@ -37,7 +37,13 @@ class DefaultSystem(System):
             self.entities[pos] = style
 
     def draw(self, **style) -> None:
-        draw.rect(self.surface, **style)
+        match style:
+            case {"image": _ }:
+                raise NotImplementedError
+            case {"rect": _, "color": _, "border_radius": _ }:
+                draw.rect(self.surface, **style)
+            case _:
+                raise NotImplementedError
 
     def move(self, pos: position, new_pos: position, rect: Rect) -> position:
         min_point = 0, 0
