@@ -1,13 +1,31 @@
 import random
+from enum import Enum
+
+from pygame import K_UP, K_LEFT, K_DOWN, K_RIGHT, Vector2, K_w
 
 from typing import Dict, Tuple
 
 from pygame import Color, Surface
 from pygame import Rect, draw
+from pygame.key import get_pressed
 
 from config import position
 from systems.base_system import System
 
+
+class Movement(Enum):
+    UP = K_UP
+    RIGHT = K_RIGHT
+    DOWN = K_DOWN
+    LEFT = K_LEFT
+
+class ActionMovement(Enum):
+    UP = K_UP
+    RIGHT = K_RIGHT
+    DOWN = K_DOWN
+    LEFT = K_LEFT
+
+valid_moves = [move for move in Movement]
 
 class DefaultSystem(System):
     entities: Dict[Tuple[int, int], Color]
@@ -16,6 +34,24 @@ class DefaultSystem(System):
     def __init__(self, surface) -> None:
         self.surface = surface
         self.entities = dict()
+    
+    def keyboard_movement(self, rect: Rect):
+        keys = get_pressed()
+        add_to_pos = Vector2(0, 0)
+        if keys[K_w]:
+            print("asd")
+            add_to_pos.y = 1
+        if keys[K_RIGHT]:
+            add_to_pos.x = 1
+        if keys[K_DOWN]:
+            add_to_pos.y = -1
+        if keys[K_LEFT]:
+            add_to_pos.x = -1
+        
+        pos = Vector2(rect.center)
+        new_pos = pos + add_to_pos
+        self.move(pos, (new_pos.x, new_pos.y), rect)
+
 
     def start(self):
         style = {
@@ -34,7 +70,7 @@ class DefaultSystem(System):
                 if self.entities.get(pos) is None:
                     break  # retry 5 times
             style["rect"].center = pos
-            self.entities[pos] = style
+            self.entities[pos] =style
 
     def draw(self, **style) -> None:
         match style:
@@ -69,6 +105,7 @@ class DefaultSystem(System):
         for pos, style in self.entities.items():
             new_pos = pos[0] + \
                 random.randint(-1, 1), pos[1] + random.randint(-1, 1)
+            new_pos = pos
             pos = self.move(pos, new_pos, style["rect"])
             new_dict[pos] = style
             self.draw(**style)
