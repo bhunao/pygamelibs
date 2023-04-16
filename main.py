@@ -2,8 +2,8 @@ import pygame
 
 import esper
 
-from components import KeyboardInput, Renderable, Velocity
-from processors import EventProcessor, KeyboardInputProcessor, MovementProcessor, RenderProcessor
+from pygamelibs.components import KeyboardInput, Renderable, Velocity
+from pygamelibs.processors import EventProcessor, KeyboardInputProcessor, MovementProcessor, RenderProcessor
 
 
 FPS = 60

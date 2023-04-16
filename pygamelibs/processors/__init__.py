@@ -1,7 +1,7 @@
 import pygame
 from esper import Processor
 
-from components import KeyboardInput, Renderable, Velocity
+from pygamelibs.components import KeyboardInput, Renderable, Velocity
 
 
 class MovementProcessor(Processor):
