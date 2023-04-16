@@ -1,8 +1,8 @@
+import pygame
 from esper import Processor
 
-import pygame
-
 from components import KeyboardInput, Renderable, Velocity
+
 
 class MovementProcessor(Processor):
     def __init__(self, minx, maxx, miny, maxy):
@@ -11,10 +11,11 @@ class MovementProcessor(Processor):
         self.maxx = maxx
         self.miny = miny
         self.maxy = maxy
+        self._target = Velocity, Renderable
 
     def process(self):
         # This will iterate over every Entity that has BOTH of these components:
-        for ent, (vel, rend) in self.world.get_components(Velocity, Renderable):
+        for ent, (vel, rend) in self.world.get_components(*self._target):
             # Update the Renderable Component's position by it's Velocity:
             rend.x += vel.x
             rend.y += vel.y
@@ -45,23 +46,20 @@ class RenderProcessor(Processor):
 class KeyboardInputProcessor(Processor):
     def __init__(self):
         super().__init__()
+        self._target = KeyboardInput, Velocity, Renderable
 
     def process(self):
         keys = pygame.key.get_pressed()
-        for ent, (k_input, vel, rend) in self.world.get_components(KeyboardInput, Velocity, Renderable):
+        for ent, (k_input, vel, rend) in self.world.get_components(*self._target):
             if keys[pygame.K_LEFT]:
-                print("left")
                 vel.x = -3
             elif keys[pygame.K_RIGHT]:
-                print("right")
                 vel.x = 3
             else:
                 vel.x = 0
             if keys[pygame.K_UP]:
-                print("up")
                 vel.y = -3
             elif keys[pygame.K_DOWN]:
-                print("down")
                 vel.y = 3
             else:
                 vel.y = 0
@@ -71,8 +69,6 @@ class EventProcessor(Processor):
         super().__init__()
 
     def process(self):
-        # This will iterate over every Entity that has BOTH of these components:
-        # Update the Renderable Component's position by it's Velocity:
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 exit()
