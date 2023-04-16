@@ -2,6 +2,7 @@ import sys
 import pygame
 
 from pygame import display, Surface, init
+from pygame import key
 from pygame.time import Clock
 from pygame.transform import scale
 
@@ -60,6 +61,10 @@ def default_builder(system, width, height, upscale):
                     pygame.quit()
                     exit()
 
+        first = [_ for _ in _sys.entities.values()][0]
+        first["color"]
+        keys = key.get_pressed()
+        _sys.keyboard_movement(first["rect"])
         _sys.update()
         screen.blit(in_screen, (0,0))
         pygame.display.flip()
