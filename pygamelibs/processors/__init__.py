@@ -1,4 +1,5 @@
-import pygame
+from pygame.locals import K_LEFT, K_RIGHT, K_UP, K_DOWN, K_ESCAPE, QUIT, KEYDOWN, KEYUP
+from pygame import key, display, event
 from esper import Processor
 
 from pygamelibs.components import KeyboardInput, Renderable, Velocity
@@ -40,7 +41,7 @@ class RenderProcessor(Processor):
         for ent, rend in self.world.get_component(Renderable):
             self.window.blit(rend.image, (rend.x, rend.y))
         # Flip the framebuffers
-        pygame.display.flip()
+        display.flip()
 
 
 class KeyboardInputProcessor(Processor):
@@ -49,17 +50,17 @@ class KeyboardInputProcessor(Processor):
         self._target = KeyboardInput, Velocity, Renderable
 
     def process(self):
-        keys = pygame.key.get_pressed()
+        keys = key.get_pressed()
         for ent, (k_input, vel, rend) in self.world.get_components(*self._target):
-            if keys[pygame.K_LEFT]:
+            if keys[K_LEFT]:
                 vel.x = -3
-            elif keys[pygame.K_RIGHT]:
+            elif keys[K_RIGHT]:
                 vel.x = 3
             else:
                 vel.x = 0
-            if keys[pygame.K_UP]:
+            if keys[K_UP]:
                 vel.y = -3
-            elif keys[pygame.K_DOWN]:
+            elif keys[K_DOWN]:
                 vel.y = 3
             else:
                 vel.y = 0
@@ -69,9 +70,9 @@ class EventProcessor(Processor):
         super().__init__()
 
     def process(self):
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
+        for _event in event.get():
+            if _event.type == QUIT:
                 exit()
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
+            elif _event.type == KEYDOWN:
+                if _event.key == K_ESCAPE:
                     exit()
