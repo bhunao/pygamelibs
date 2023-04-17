@@ -8,5 +8,5 @@ setup(
     description="stuff for game/simulation development.",
     long_description=README,
     url="https://github.com/bhunao/pygamelibs/",
-    packages=find_packages(exclude=("test*"))
+    packages=find_packages()
 )

@@ -1,4 +1,7 @@
 setup.py
+pygamelibs/__init__.py
+pygamelibs/components.py
+pygamelibs/processors.py
 pygamelibs.egg-info/PKG-INFO
 pygamelibs.egg-info/SOURCES.txt
 pygamelibs.egg-info/dependency_links.txt

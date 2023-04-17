@@ -17,15 +17,19 @@ def run():
     clock = pygame.time.Clock()
     pygame.key.set_repeat(1, 1)
 
+    img = pygame.Surface((50, 50)) 
+    img.fill("purple")
+
     # Initialize Esper world, and create a "player" Entity with a few Components.
     world = esper.World()
     player = world.create_entity()
     world.add_component(player, Velocity(x=0, y=0))
-    world.add_component(player, Renderable(image=pygame.image.load("redsquare.png"), posx=100, posy=100))
+    # world.add_component(player, Renderable(image=load("<image_path>"), posx=100, posy=100))
+    world.add_component(player, Renderable(image=img, posx=100, posy=100))
     world.add_component(player, KeyboardInput())
     # Another motionless Entity:
     enemy = world.create_entity()
-    world.add_component(enemy, Renderable(image=pygame.image.load("bluesquare.png"), posx=400, posy=250))
+    world.add_component(enemy, Renderable(image=img, posx=400, posy=250))
     world.add_component(enemy, Velocity(x=0, y=0))
 
     # Create some Processor instances, and asign them to be processed.
@@ -40,6 +44,7 @@ def run():
 
     running = True
     while running:
+        window.fill("gray")
         world.process()
         clock.tick(FPS)
 
