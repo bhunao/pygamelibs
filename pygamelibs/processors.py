@@ -1,18 +1,25 @@
+import enum
 from pygame.locals import K_LEFT, K_RIGHT, K_UP, K_DOWN, K_ESCAPE, QUIT, KEYDOWN, KEYUP
 from pygame import key, display, event, time
 from esper import Processor
 
-from pygamelibs.components import AnimatedRenderable, KeyboardInput, Renderable, Velocity
+from pygamelibs.components import AnimatedRenderable, ConstantVelocity, KeyboardInput, Renderable, Velocity
 
+
+
+class OutOfBounds(enum):
+    DELETE = enum.auto()
+    KEEP_INSIDE = enum.auto()
 
 class MovementProcessor(Processor):
-    def __init__(self, minx, maxx, miny, maxy):
+    def __init__(self, minx, maxx, miny, maxy, outofbound: OutOfBounds = None):
         super().__init__()
         self.minx = minx
         self.maxx = maxx
         self.miny = miny
         self.maxy = maxy
         self._target = Velocity, Renderable
+        self.outofbound = outofbound
 
     def process(self):
         # This will iterate over every Entity that has BOTH of these components:
@@ -20,12 +27,21 @@ class MovementProcessor(Processor):
             # Update the Renderable Component's position by it's Velocity:
             rend.x += vel.x
             rend.y += vel.y
-            # An example of keeping the sprite inside screen boundaries. Basically,
-            # adjust the position back inside screen boundaries if it tries to go outside:
-            rend.x = max(self.minx, rend.x)
-            rend.y = max(self.miny, rend.y)
-            rend.x = min(self.maxx - rend.w, rend.x)
-            rend.y = min(self.maxy - rend.h, rend.y)
+
+            match OutOfBounds(self.outofbound):
+                case OutOfBounds.KEEP_INSIDE:
+                    # An example of keeping the sprite inside screen boundaries. Basically,
+                    # adjust the position back inside screen boundaries if it tries to go outside:
+                    rend.x = max(self.minx, rend.x)
+                    rend.y = max(self.miny, rend.y)
+                    rend.x = min(self.maxx - rend.w, rend.x)
+                    rend.y = min(self.maxy - rend.h, rend.y)
+                case OutOfBounds.DELETE:
+                    if self.miny > rend.y or self.maxy < rend.y:
+                        self.world.delete_entity(ent)
+                    if self.minx > rend.x or self.maxx < rend.x:
+                        self.world.delete_entity(ent)
+
 
 
 class RenderProcessor(Processor):
@@ -97,8 +113,6 @@ class AnimatedRenderProcessor(Processor):
             rend.frame = rend.frame + 1 if old_frame < len(rend.images) else 0
         # Flip the framebuffers
         display.flip()
-
-
 
 class ConstantMovementProcessor(Processor):
     def __init__(self, minx, maxx, miny, maxy, out_of_window=False):

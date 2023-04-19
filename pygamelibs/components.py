@@ -21,7 +21,6 @@ class Renderable:
         self.w: int = image.get_width()
         self.h: int = image.get_height()
 
-
 @dataclass
 class ConstantVelocity:
     x: float = 1.0
