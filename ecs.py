@@ -7,8 +7,8 @@ from pygame.image import load
 
 import esper
 
-from pygamelibs.components import KeyboardInput, Renderable, Velocity
-from pygamelibs.processors import ConstantMovementProcessor, EventProcessor, MovementProcessor, RenderProcessor
+from pygamelibs.components import ConstantVelocity, KeyboardInput, Renderable, Velocity
+from pygamelibs.processors import ConstantMovementProcessor, EventProcessor, MovementProcessor, OutOfBounds, RenderProcessor
 
 
 def create_entity(world, *components):
@@ -53,7 +53,7 @@ class KeyboardInputProcessor(esper.Processor):
                     self.time["space"] = now
                     create_entity(self.world,
                                 Renderable(image=bullets[0], posx=rend.x, posy=rend.y),
-                                ConstantVelocity(x=0, y=-5)
+                                Velocity(x=0, y=-5)
                                 )
 
 class CollisionProcessor(esper.Processor):
@@ -104,14 +104,15 @@ def run():
 
     # Create some Processor instances, and asign them to be processed.
     render_processor = RenderProcessor(window=window)
-    movement_processor = MovementProcessor(minx=0, maxx=RESOLUTION[0], miny=0, maxy=RESOLUTION[1])
+    movement_processor = MovementProcessor(minx=0, maxx=RESOLUTION[0], miny=0, maxy=RESOLUTION[1], outofbound=OutOfBounds.)
     event_processor = EventProcessor()
     keyboard_input_processor = KeyboardInputProcessor()
     world.add_processor(render_processor)
     world.add_processor(movement_processor)
     world.add_processor(event_processor)
     world.add_processor(keyboard_input_processor)
-    world.add_processor(ConstantMovementProcessor(minx=0, maxx=RESOLUTION[0], miny=0, maxy=RESOLUTION[1], out_of_window=True))
+    # world.add_processor(ConstantMovementProcessor(minx=0, maxx=RESOLUTION[0], miny=0, maxy=RESOLUTION[1], out_of_window=True))
+    # world.add_processor(MovementProcessor(minx=0, maxx=RESOLUTION[0], miny=0, maxy=RESOLUTION[1]))
     world.add_processor(RenderProcessor(window=window))
 
     running = True
