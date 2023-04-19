@@ -97,3 +97,26 @@ class AnimatedRenderProcessor(Processor):
             rend.frame = rend.frame + 1 if old_frame < len(rend.images) else 0
         # Flip the framebuffers
         display.flip()
+
+
+
+class ConstantMovementProcessor(Processor):
+    def __init__(self, minx, maxx, miny, maxy, out_of_window=False):
+        super().__init__()
+        self.minx = minx
+        self.maxx = maxx
+        self.miny = miny
+        self.maxy = maxy
+        self._target = ConstantVelocity, Renderable
+        self.out_of_window = out_of_window
+
+    def process(self):
+        for ent, (vel, rend) in self.world.get_components(*self._target):
+            rend.x += vel.x
+            rend.y += vel.y
+
+            if self.out_of_window:
+                if self.miny > rend.y or self.maxy < rend.y:
+                    self.world.delete_entity(ent)
+                if self.minx > rend.x or self.maxx < rend.x:
+                    self.world.delete_entity(ent)
