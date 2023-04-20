@@ -1,4 +1,4 @@
-from pygame import Surface, display
+from pygame import Surface
 from dataclasses import dataclass
 
 
@@ -13,11 +13,11 @@ class Velocity:
 
 
 class Renderable:
-    def __init__(self, image, posx, posy, depth=0):
-        self.image: Surface = image
+    def __init__(self, image: Surface, posx, posy, depth=0):
+        self.image = image
+        self.rect = image.get_rect()
         self.depth: int = depth
-        self.x: int = posx
-        self.y: int = posy
+        self.rect.center = posx, posy
         self.w: int = image.get_width()
         self.h: int = image.get_height()
 
