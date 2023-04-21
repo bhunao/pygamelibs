@@ -1,4 +1,4 @@
-from typing import Callable, List
+from typing import Callable
 from pygame import Surface
 from dataclasses import dataclass
 
@@ -20,8 +20,6 @@ class Renderable:
         self.rect = image.get_rect()
         self.depth: int = depth
         self.rect.center = posx, posy
-        self.w: int = image.get_width()
-        self.h: int = image.get_height()
 
 
 @dataclass
@@ -36,13 +34,22 @@ class AnimatedRenderable:
         self.frame: int = 0
         self.last_update: int = 0
         self.depth: int = depth
-        self.x: int = posx
-        self.y: int = posy
-        self.w: int = images[0].get_width()
-        self.h: int = images[0].get_height()
+        self.rect.center = posx, posy
 
 
 @dataclass
 class Button:
     action: Callable
     state: str = "on"
+
+@dataclass
+class Enemy:
+    name: str = "enemy"
+
+@dataclass
+class Player:
+    pass
+
+@dataclass
+class Bullet:
+    pass

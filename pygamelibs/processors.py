@@ -1,11 +1,12 @@
+from random import randint
 from esper import Processor
 from pygame import Surface, key, display, event, time, mouse
 from pygame.locals import (
-    K_LEFT, K_RIGHT, K_UP, K_DOWN, K_ESCAPE, QUIT, KEYDOWN, K_SPACE)
+    K_LEFT, K_RIGHT, K_UP, K_DOWN, K_ESCAPE, QUIT, KEYDOWN, K_SPACE,
+    K_w, K_a, K_s, K_d)
 
-from functions import create_entity
 from pygamelibs.components import (
-    AnimatedRenderable, ConstantVelocity, KeyboardInput, Renderable, Velocity, Button)
+    AnimatedRenderable, Bullet, ConstantVelocity, KeyboardInput, Renderable, Velocity, Button)
 
 
 class MovementProcessor(Processor):
@@ -41,7 +42,6 @@ class RenderProcessor(Processor):
     def process(self):
         for ent, rend in self.world.get_component(Renderable):
             self.window.blit(rend.image, rend.rect.topleft)
-            # self.window.blit(rend.image, (rend.x, rend.y))
         display.flip()
 
 
@@ -53,15 +53,15 @@ class KeyboardInputProcessor(Processor):
     def process(self):
         keys = key.get_pressed()
         for ent, (k_input, vel, rend) in self.world.get_components(*self._target):
-            if keys[K_LEFT]:
+            if keys[K_a]:
                 vel.x = -3
-            elif keys[K_RIGHT]:
+            elif keys[K_d]:
                 vel.x = 3
             else:
                 vel.x = 0
-            if keys[K_UP]:
+            if keys[K_w]:
                 vel.y = -3
-            elif keys[K_DOWN]:
+            elif keys[K_s]:
                 vel.y = 3
             else:
                 vel.y = 0
@@ -154,10 +154,11 @@ class KeyboardInputProcessor(Processor):
                 teck = self.time.get("space", now)
                 if now - teck > 200:
                     self.time["space"] = now
-                    create_entity(self.world,
+                    self.world.create_entity(
                                   Renderable(image=self.bullet_sprite,
                                              posx=rend.rect.centerx, posy=rend.rect.centery),
-                                  ConstantVelocity(x=0, y=-5)
+                                  ConstantVelocity(x=0, y=-5),
+                                  Bullet()
                                   )
 
 
@@ -168,18 +169,39 @@ class CollisionProcessor(Processor):
         self.type2 = type2
 
     def process(self):
-        for ent, body in self.world.get_components(*self.type1, Velocity):
-            for ent, body in self.world.get_components(*self.type2, Velocity):
-                pass    # TODO: add collision process between types
+        for ent1, (type1, rend1) in self.world.get_components(self.type1, Renderable):
+            for ent2, (type2, rend2) in self.world.get_components(self.type2, Renderable):
+                if rend1.rect.colliderect(rend2.rect):
+                    print(f"{ent1} collided with {ent2}")
+                    self.world.delete_entity(ent2)
+                    pass    # TODO: add collision process between types
 
 class ButtonProcessor(Processor):
     def __init__(self) -> None:
         super().__init__()
-        self._target = Button, Renderable
+        self._target = Renderable, Button
 
     def process(self, *args, **kwargs):
         mouse_pos = mouse.get_pos()
         mouse_buttons = mouse.get_pressed()
-        for ent, (button, rend) in self.world.get_components(*self._target):
+        for ent, (rend, button) in self.world.get_components(*self._target):
             if rend.rect.collidepoint(mouse_pos) and mouse_buttons[0]:
                 button.action()
+
+            
+class EnemySpawnerProcessor(Processor):
+    def __init__(self, enemy, image, window_size) -> None:
+        super().__init__()
+        self.EnemyComponent = enemy
+        self.image = image
+        self.window_size = window_size
+
+    def process(self, *args, **kwargs):
+        n_enemies = len(self.world.get_components(self.EnemyComponent))
+        if n_enemies <= 3:
+            self.world.create_entity(
+                self.EnemyComponent(),
+                Renderable(self.image,
+                           posx=randint(0, self.window_size[0]),
+                           posy=randint(0, self.window_size[1])),
+                Velocity(randint(-2, 2), randint(-2, 2)))

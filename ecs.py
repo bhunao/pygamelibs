@@ -5,9 +5,9 @@ from pygame.image import load
 from functions import draw_text
 
 from pygamelibs.components import (
-    ConstantVelocity, KeyboardInput, Renderable, Velocity, Button)
+    Bullet, ConstantVelocity, Enemy, KeyboardInput, Player, Renderable, Velocity, Button)
 from pygamelibs.processors import (
-    ButtonProcessor, ConstantMovementProcessor, EventProcessor, KeyboardInputProcessor,
+    ButtonProcessor, CollisionProcessor, ConstantMovementProcessor, EnemySpawnerProcessor, EventProcessor, KeyboardInputProcessor,
     MovementProcessor, RenderProcessor)
 
 
@@ -33,11 +33,13 @@ def run():
     world.add_component(player, Renderable(
         image=spaceships[3], posx=100, posy=100))
     world.add_component(player, KeyboardInput())
+    world.add_component(player, Player())
 
     enemy = world.create_entity()
     world.add_component(enemy, Renderable(
-        image=spaceships[14], posx=400, posy=250))
+        image=spaceships[14], posx=100, posy=100))
     world.add_component(enemy, Velocity(x=0, y=0))
+    world.add_component(enemy, Enemy())
 
     world.create_entity(
                   Renderable(image=draw_text(
@@ -51,7 +53,7 @@ def run():
 
     world.create_entity(world,
                   ConstantVelocity(),
-                  Renderable(image=spaceships[8], posx=137, posy=13),
+                  Renderable(image=spaceships[8], posx=50, posy=13),
                   )
 
     world.create_entity(world,
@@ -74,12 +76,18 @@ def run():
 
     button_processor = ButtonProcessor()
 
+    collision_processors = CollisionProcessor(type1=Bullet, type2=Enemy)
+
+    enemy_spawner_processor = EnemySpawnerProcessor(Enemy, spaceships[14], RESOLUTION)
+
     world.add_processor(render_processor)
     world.add_processor(movement_processor)
     world.add_processor(event_processor)
     world.add_processor(keyboard_input_processor)
     world.add_processor(constant_move_processor)
     world.add_processor(button_processor)
+    world.add_processor(collision_processors)
+    world.add_processor(enemy_spawner_processor)
 
 
     running = True
