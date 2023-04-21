@@ -7,7 +7,7 @@ from functions import draw_text
 from pygamelibs.components import (
     Bullet, ConstantVelocity, Enemy, KeyboardInput, Player, Renderable, Velocity, Button)
 from pygamelibs.processors import (
-    ButtonProcessor, CollisionProcessor, ConstantMovementProcessor, EnemySpawnerProcessor, EventProcessor, KeyboardInputProcessor,
+    ButtonProcessor, CollisionProcessor, ConstantMovementProcessor, CarEnemySpawnerProcessor, EventProcessor, KeyboardInputProcessor,
     MovementProcessor, RenderProcessor)
 
 
@@ -20,6 +20,7 @@ bullets = [
 ]
 
 
+
 def run():
     pygame.init()
     window = pygame.display.set_mode(RESOLUTION)
@@ -28,18 +29,18 @@ def run():
     pygame.key.set_repeat(1, 1)
 
     world = esper.World()
-    player = world.create_entity()
-    world.add_component(player, Velocity(x=0, y=0))
-    world.add_component(player, Renderable(
-        image=spaceships[3], posx=100, posy=100))
-    world.add_component(player, KeyboardInput())
-    world.add_component(player, Player())
+    world.create_entity(
+        Velocity(x=0, y=0),
+        Renderable(
+            image=spaceships[3], posx=100, posy=100),
+        KeyboardInput())
 
-    enemy = world.create_entity()
-    world.add_component(enemy, Renderable(
-        image=spaceships[14], posx=100, posy=100))
-    world.add_component(enemy, Velocity(x=0, y=0))
-    world.add_component(enemy, Enemy())
+    world.create_entity(
+        Renderable(
+            image=spaceships[14], posx=100, posy=100),
+        Velocity(x=0, y=0),
+        Enemy()
+    )
 
     world.create_entity(
                   Renderable(image=draw_text(
@@ -78,7 +79,7 @@ def run():
 
     collision_processors = CollisionProcessor(type1=Bullet, type2=Enemy)
 
-    enemy_spawner_processor = EnemySpawnerProcessor(Enemy, spaceships[14], RESOLUTION)
+    enemy_spawner_processor = CarEnemySpawnerProcessor(Enemy, spaceships[14], RESOLUTION)
 
     world.add_processor(render_processor)
     world.add_processor(movement_processor)
