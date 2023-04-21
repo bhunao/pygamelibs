@@ -8,9 +8,3 @@ def draw_text(text: str | int, pos, size=15, color=(255, 255, 255), bold: bool =
     text_rect = text.get_rect()
     text_rect.center = pos
     return text
-
-def create_entity(world, *components):
-    entity = world.create_entity()
-    for component in components:
-        world.add_component(entity, component)
-    

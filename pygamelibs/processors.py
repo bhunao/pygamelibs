@@ -1,11 +1,11 @@
 from esper import Processor
-from pygame import Surface, key, display, event, time
+from pygame import Surface, key, display, event, time, mouse
 from pygame.locals import (
     K_LEFT, K_RIGHT, K_UP, K_DOWN, K_ESCAPE, QUIT, KEYDOWN, K_SPACE)
 
 from functions import create_entity
 from pygamelibs.components import (
-    AnimatedRenderable, ConstantVelocity, KeyboardInput, Renderable, Velocity)
+    AnimatedRenderable, ConstantVelocity, KeyboardInput, Renderable, Velocity, Button)
 
 
 class MovementProcessor(Processor):
@@ -171,3 +171,15 @@ class CollisionProcessor(Processor):
         for ent, body in self.world.get_components(*self.type1, Velocity):
             for ent, body in self.world.get_components(*self.type2, Velocity):
                 pass    # TODO: add collision process between types
+
+class ButtonProcessor(Processor):
+    def __init__(self) -> None:
+        super().__init__()
+        self._target = Button, Renderable
+
+    def process(self, *args, **kwargs):
+        mouse_pos = mouse.get_pos()
+        mouse_buttons = mouse.get_pressed()
+        for ent, (button, rend) in self.world.get_components(*self._target):
+            if rend.rect.collidepoint(mouse_pos) and mouse_buttons[0]:
+                button.action()

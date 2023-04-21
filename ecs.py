@@ -2,11 +2,12 @@ import esper
 import pygame
 
 from pygame.image import load
-from functions import create_entity, draw_text
+from functions import draw_text
 
-from pygamelibs.components import ConstantVelocity, KeyboardInput, Renderable, Velocity
+from pygamelibs.components import (
+    ConstantVelocity, KeyboardInput, Renderable, Velocity, Button)
 from pygamelibs.processors import (
-    ConstantMovementProcessor, EventProcessor, KeyboardInputProcessor,
+    ButtonProcessor, ConstantMovementProcessor, EventProcessor, KeyboardInputProcessor,
     MovementProcessor, RenderProcessor)
 
 
@@ -20,7 +21,6 @@ bullets = [
 
 
 def run():
-    # Initialize Pygame stuff
     pygame.init()
     window = pygame.display.set_mode(RESOLUTION)
     pygame.display.set_caption("mini-space")
@@ -39,22 +39,27 @@ def run():
         image=spaceships[14], posx=400, posy=250))
     world.add_component(enemy, Velocity(x=0, y=0))
 
-    create_entity(world,
+    world.create_entity(
                   Renderable(image=draw_text(
                       "alsdkja~slçkdjaçs~ldkj", (150, 150)), posx=300, posy=300),
                   )
 
-    create_entity(world,
+    world.create_entity(world,
                   Velocity(x=0, y=0),
                   Renderable(image=spaceships[10], posx=137, posy=13),
                   )
 
-    create_entity(world,
+    world.create_entity(world,
                   ConstantVelocity(),
                   Renderable(image=spaceships[8], posx=137, posy=13),
                   )
 
-    # Create some Processor instances, and asign them to be processed.
+    world.create_entity(world,
+                  Renderable(image=load("assets/imgs/ui/grey.png"),
+                             posx=250, posy=250),
+                  Button(lambda: print("button"), "on")
+                  )
+
     render_processor = RenderProcessor(window=window)
 
     event_processor = EventProcessor()
@@ -67,12 +72,15 @@ def run():
     constant_move_processor = ConstantMovementProcessor(
         minx=0, maxx=RESOLUTION[0], miny=0, maxy=RESOLUTION[1])
 
+    button_processor = ButtonProcessor()
+
     world.add_processor(render_processor)
     world.add_processor(movement_processor)
     world.add_processor(event_processor)
     world.add_processor(keyboard_input_processor)
     world.add_processor(constant_move_processor)
-    world.add_processor(RenderProcessor(window=window))
+    world.add_processor(button_processor)
+
 
     running = True
     while running:
