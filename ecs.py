@@ -7,7 +7,7 @@ from functions import draw_text
 from pygamelibs.components import (
     Bullet, ConstantVelocity, Enemy, KeyboardInput, Player, Renderable, Velocity, Button)
 from pygamelibs.processors import (
-    ButtonProcessor, CollisionProcessor, ConstantMovementProcessor, CarEnemySpawnerProcessor, EventProcessor, KeyboardInputProcessor,
+    ButtonProcessor, CollisionProcessor, ConstantMovementProcessor, EnemySpawnerProcessor, EventProcessor, KeyboardInputProcessor,
     MovementProcessor, RenderProcessor)
 
 
@@ -32,34 +32,35 @@ def run():
     world.create_entity(
         Velocity(x=0, y=0),
         Renderable(
-            image=spaceships[3], posx=100, posy=100),
+            image=spaceships[3], pos=(100, 100)),
         KeyboardInput())
 
     world.create_entity(
         Renderable(
-            image=spaceships[14], posx=100, posy=100),
+            image=spaceships[14], pos=(100, 100)),
         Velocity(x=0, y=0),
         Enemy()
     )
 
     world.create_entity(
                   Renderable(image=draw_text(
-                      "alsdkja~slçkdjaçs~ldkj", (150, 150)), posx=300, posy=300),
+                      "alsdkja~slçkdjaçs~ldkj", (150, 150)),
+                      pos=(300, 300)),
                   )
 
     world.create_entity(world,
                   Velocity(x=0, y=0),
-                  Renderable(image=spaceships[10], posx=137, posy=13),
+                  Renderable(image=spaceships[10], pos=(137, 13)),
                   )
 
     world.create_entity(world,
                   ConstantVelocity(),
-                  Renderable(image=spaceships[8], posx=50, posy=13),
+                  Renderable(image=spaceships[8], pos=(50, 13)),
                   )
 
     world.create_entity(world,
                   Renderable(image=load("assets/imgs/ui/grey.png"),
-                             posx=250, posy=250),
+                             pos=(250, 250)),
                   Button(lambda: print("button"), "on")
                   )
 
@@ -79,7 +80,7 @@ def run():
 
     collision_processors = CollisionProcessor(type1=Bullet, type2=Enemy)
 
-    enemy_spawner_processor = CarEnemySpawnerProcessor(Enemy, spaceships[14], RESOLUTION)
+    enemy_spawner_processor = EnemySpawnerProcessor(Enemy, spaceships[14], RESOLUTION)
 
     world.add_processor(render_processor)
     world.add_processor(movement_processor)

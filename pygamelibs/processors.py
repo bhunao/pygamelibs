@@ -158,7 +158,7 @@ class KeyboardInputProcessor(Processor):
                     self.world.create_entity(
                                   Renderable(image=self.bullet_sprite,
                                              pos=pos),
-                                  ConstantVelocity(x=3, y=0),
+                                  ConstantVelocity(x=0, y=-3),
                                   Bullet()
                                   )
 
@@ -191,32 +191,22 @@ class ButtonProcessor(Processor):
 
             
 class EnemySpawnerProcessor(Processor):
-    def __init__(self, enemy, image, window_size, points=None) -> None:
+    def __init__(self, enemy, image, window_size, max_enemies=10) -> None:
         super().__init__()
         self.EnemyComponent = enemy
         self.image = image
         self.window_size = window_size
-        self.spawn_points = points
+        self.max_enemies = max_enemies
 
     def process(self, *args, **kwargs):
         n_enemies = len(self.world.get_components(self.EnemyComponent))
-        if n_enemies <= 3:
-
-            if self.spawn_points:
-                print(f"{self.spawn_points=}")
-                self.world.create_entity(
-                    self.EnemyComponent(),
-                    Renderable(self.image,
-                            pos=(choice(self.spawn_points), self.window_size[1])),
-                    Velocity(randint(-2, 2), randint(1, 2)))
-                return
-
-        self.world.create_entity(
-            self.EnemyComponent(),
-            Renderable(self.image,
-                        pos=(randint(0, self.window_size[0]),
-                            randint(0, self.window_size[1]))),
-            Velocity(randint(-2, 2), randint(1, 2)))
+        if n_enemies <= self.max_enemies:
+            self.world.create_entity(
+                self.EnemyComponent(),
+                Renderable(self.image,
+                            pos=(randint(0, self.window_size[0]),
+                                randint(0, self.window_size[1]))),
+                Velocity(randint(-2, 2), randint(1, 2)))
 
 class UIProcessor(Processor):
     def __init__(self, ) -> None:
@@ -237,42 +227,3 @@ class BackgroundProcessor(Processor):
         for ent, (rend, bg_obj) in self.world.get_components(Renderable, BackgroundObject):
             if rend.rect.x < 5:
                 rend.rect.x = self.window_size[0] - 10
-
-
-            
-class EnemySpawnerProcessor(Processor):
-    def __init__(self, enemy, image, window_size, points=None) -> None:
-        super().__init__()
-        self.EnemyComponent = enemy
-        self.image = image
-        self.window_size = window_size
-        self.spawn_points = points
-
-    def process(self, *args, **kwargs):
-        n_enemies = len(self.world.get_components(self.EnemyComponent))
-        if n_enemies <= 3:
-
-            if self.spawn_points:
-                print(f"{self.spawn_points=}")
-                self.world.create_entity(
-                    self.EnemyComponent(),
-                    Renderable(self.image,
-                            pos=(choice(self.spawn_points), self.window_size[1])),
-                    Velocity(randint(-2, 2), randint(1, 2)))
-                return
-
-        self.world.create_entity(
-            self.EnemyComponent(),
-            Renderable(self.image,
-                        pos=(randint(0, self.window_size[0]),
-                            randint(0, self.window_size[1]))),
-            Velocity(randint(-2, 2), randint(1, 2)))
-
-class UIProcessor(Processor):
-    def __init__(self, ) -> None:
-        super().__init__()
-
-    def process(self, *args, **kwargs):
-        for ent, body in self.world.get_components(UIComponent):
-            # TODO: something for UI i guess...
-            pass
