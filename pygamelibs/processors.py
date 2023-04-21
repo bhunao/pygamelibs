@@ -158,7 +158,7 @@ class KeyboardInputProcessor(Processor):
                     self.world.create_entity(
                                   Renderable(image=self.bullet_sprite,
                                              pos=pos),
-                                  ConstantVelocity(x=0, y=-3),
+                                  ConstantVelocity(x=3, y=0),
                                   Bullet()
                                   )
 

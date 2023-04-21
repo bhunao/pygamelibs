@@ -48,7 +48,6 @@ class CarEnemySpawnerProcessor(EnemySpawnerProcessor):
     def process(self, *args, **kwargs):
         n_enemies = len(self.world.get_components(self.EnemyComponent))
         if n_enemies <= 3:
-            sixth = RESOLUTION[1] / 6
             self.world.create_entity(
                 self.EnemyComponent(),
                 Renderable(
@@ -61,7 +60,7 @@ class CarEnemySpawnerProcessor(EnemySpawnerProcessor):
 def run():
     pygame.init()
     window = pygame.display.set_mode(RESOLUTION)
-    pygame.display.set_caption("mini-space")
+    pygame.display.set_caption("car-vrum-vrum")
     clock = pygame.time.Clock()
     pygame.key.set_repeat(1, 1)
 
@@ -91,7 +90,7 @@ def run():
 
     world.create_entity(
                   Renderable(image=draw_text(
-                      "alsdkja~slçkdjaçs~ldkj", (150, 150)), pos=(300, 300)),
+                      "car vrum vrum", (150, 150)), pos=(300, 300)),
                   )
 
     world.create_entity(
