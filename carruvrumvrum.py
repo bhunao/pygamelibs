@@ -1,6 +1,6 @@
 from random import choice, randint
 from os import listdir
-from os.path import isfile, join
+from os.path import join
 import esper
 import pygame
 
@@ -9,12 +9,12 @@ from pygame.transform import flip, rotate, scale2x
 from functions import draw_text
 
 from pygamelibs.components import (
-    BackgroundObject, Bullet, ConstantVelocity, Enemy, KeyboardInput, Player, Renderable, UIComponent,
-    Velocity, Button)
+        BackgroundObject, Bullet, Enemy, KeyboardInput, Player,
+        Renderable, UIComponent, Velocity, Button)
 from pygamelibs.processors import (
-    BackgroundProcessor, ButtonProcessor, CollisionProcessor, ConstantMovementProcessor,
-    EnemySpawnerProcessor, EventProcessor, KeyboardInputProcessor,
-    MovementProcessor, RenderProcessor, UIProcessor)
+        BackgroundProcessor, ButtonProcessor, CollisionProcessor,
+        ConstantMovementProcessor, EnemySpawnerProcessor, EventProcessor,
+        KeyboardInputProcessor, MovementProcessor, RenderProcessor, UIProcessor)
 
 
 def load_scale(path: str):
@@ -24,11 +24,16 @@ FPS = 60
 RESOLUTION = 800, 400
 spaceships = [load_scale(f"assets/imgs/ships/ship_{n:04}.png") for n in range(23)]
 bullets = [
-    rotate(load_scale("assets/imgs/effects/bullet_0000.png"), 90),
-    rotate(load_scale("assets/imgs/effects/bullet_0002.png"), 90)
-]
+        rotate(load_scale("assets/imgs/effects/bullet_0000.png"), 90),
+        rotate(load_scale("assets/imgs/effects/bullet_0002.png"), 90)
+        ]
 LANE_SIZE = RESOLUTION[1] / 5
-lanes = [(lane * LANE_SIZE, lane * LANE_SIZE + LANE_SIZE - 1) for lane in range(int(RESOLUTION[1]/LANE_SIZE))]
+lanes = []
+for lane in range(int(RESOLUTION[1]/LANE_SIZE)):
+    lane_points = lane * LANE_SIZE, lane * LANE_SIZE + LANE_SIZE - 1
+    lanes.append(lane_points)
+
+
 spawn_points = [x + LANE_SIZE/2 for x, _ in lanes[1:4]]
 
 car_assets = "car_assets/Cars"
@@ -36,25 +41,24 @@ car_sprites = [load_scale(join(car_assets, f)) for f in listdir(car_assets)]
 index = randint(0, len(car_sprites)-1)
 enemy_sprite = flip(car_sprites[index], True, False)
 lane_colors = [
-    "darkgreen",
-    "gray",
-    "darkgray",
-    "gray",
-    "darkgreen"
-]
-
+        "darkgreen",
+        "gray",
+        "darkgray",
+        "gray",
+        "darkgreen"
+        ]
 
 class CarEnemySpawnerProcessor(EnemySpawnerProcessor):
     def process(self, *args, **kwargs):
         n_enemies = len(self.world.get_components(self.EnemyComponent))
         if n_enemies <= 3:
             self.world.create_entity(
-                self.EnemyComponent(),
-                Renderable(
-                    image=self.image,
-                    pos=(RESOLUTION[0], choice(spawn_points))
-                ),
-                Velocity(-1, 0))
+                    self.EnemyComponent(),
+                    Renderable(
+                        image=self.image,
+                        pos=(RESOLUTION[0], choice(spawn_points))
+                        ),
+                    Velocity(-1, 0))
 
 
 def run():
@@ -72,56 +76,55 @@ def run():
         # color = randint(0, 255), randint(0, 255), randint(0, 255), 
         image.fill(color)
         world.create_entity(
+                Renderable(
+                    image=image,
+                    pos=(0, pos[0]),
+                    pos_type="topleft"
+                    )
+                )
+
+    world.create_entity(
+            Player(),
+            Velocity(x=0, y=0),
             Renderable(
-                image=image,
-                pos=(0, pos[0]),
-                pos_type="topleft"
+                image=car_sprites[15],
+                pos=(RESOLUTION[0]/2, RESOLUTION[1] - 100),
+                ),
+            KeyboardInput())
+
+    world.create_entity(
+            Renderable(image=draw_text(
+                "car vrum vrum", (150, 150)), pos=(300, 300)),
             )
-        )
 
     world.create_entity(
-        Player(),
-        Velocity(x=0, y=0),
-        Renderable(
-            image=car_sprites[15],
-              pos=(RESOLUTION[0]/2, RESOLUTION[1] - 100),
-              ),
-        KeyboardInput())
-
-    world.create_entity(
-                  Renderable(image=draw_text(
-                      "car vrum vrum", (150, 150)), pos=(300, 300)),
-                  )
-
-    world.create_entity(
-                  Renderable(image=load("assets/imgs/ui/grey.png"),
-                             pos=(250, 250),
-                             pos_type="bottomleft"),
-                  Button(lambda: print("button"), "on")
-                  )
+            Renderable(image=load("assets/imgs/ui/grey.png"),
+                       pos=(250, 250),
+                       pos_type="bottomleft"),
+            Button(lambda: print("button clicked"))
+            )
 
     n_posts = 8
     teko = RESOLUTION[0] / n_posts
     for i in range(n_posts):
-        print(teko * i)
         world.create_entity(
-            Renderable(
-                load_scale("car_assets/Props/light_double.png"),
-                pos=(teko * i, lanes[0][1]),
-                pos_type="bottomleft"
-            ),
-            Velocity(-1, 0),
-            BackgroundObject()
-        )
+                Renderable(
+                    load_scale("car_assets/Props/light_double.png"),
+                    pos=(teko * i, lanes[0][1]),
+                    pos_type="bottomleft"
+                    ),
+                Velocity(-1, 0),
+                BackgroundObject()
+                )
         world.create_entity(
-            Renderable(
-                load_scale("car_assets/Props/light_double.png"),
-                pos=(teko * i , lanes[3][1]),
-                pos_type="bottomleft"
-            ),
-            Velocity(-1, 0),
-            BackgroundObject()
-        )
+                Renderable(
+                    load_scale("car_assets/Props/light_double.png"),
+                    pos=(teko * i , lanes[3][1]),
+                    pos_type="bottomleft"
+                    ),
+                Velocity(-1, 0),
+                BackgroundObject()
+                )
 
     world.create_entity(UIComponent())
 
@@ -132,16 +135,21 @@ def run():
     keyboard_input_processor = KeyboardInputProcessor(bullets[1])
 
     movement_processor = MovementProcessor(
-        minx=0, maxx=RESOLUTION[0], miny=0, maxy=RESOLUTION[1])
+            minx=0, maxx=RESOLUTION[0], miny=0, maxy=RESOLUTION[1])
 
     constant_move_processor = ConstantMovementProcessor(
-        minx=0, maxx=RESOLUTION[0], miny=0, maxy=RESOLUTION[1])
+            minx=0, maxx=RESOLUTION[0], miny=0, maxy=RESOLUTION[1])
 
     button_processor = ButtonProcessor()
 
     collision_processors = CollisionProcessor(type1=Bullet, type2=Enemy)
 
-    enemy_spawner_processor = CarEnemySpawnerProcessor(Enemy, enemy_sprite, RESOLUTION, spawn_points)
+    enemy_spawner_processor = CarEnemySpawnerProcessor(
+            Enemy,
+            enemy_sprite,
+            RESOLUTION,
+            spawn_points
+            )
 
     ui_processor = UIProcessor()
 
