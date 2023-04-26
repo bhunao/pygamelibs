@@ -5,9 +5,11 @@ from pygame.image import load
 from functions import draw_text
 
 from pygamelibs.components import (
-    Bullet, ConstantVelocity, Enemy, KeyboardInput, Player, Renderable, Velocity, Button)
+    Bullet, ConstantVelocity, Enemy, KeyboardInput, Player, Renderable, Velocity,
+    Button)
 from pygamelibs.processors import (
-    ButtonProcessor, CollisionProcessor, ConstantMovementProcessor, EnemySpawnerProcessor, EventProcessor, KeyboardInputProcessor,
+    ButtonProcessor, CollisionProcessor, ConstantMovementProcessor,
+    EnemySpawnerProcessor, EventProcessor, KeyboardInputProcessor,
     MovementProcessor, RenderProcessor)
 
 
@@ -18,7 +20,6 @@ bullets = [
     load("assets/imgs/effects/bullet_0000.png"),
     load("assets/imgs/effects/bullet_0002.png")
 ]
-
 
 
 def run():
@@ -43,26 +44,26 @@ def run():
     )
 
     world.create_entity(
-                  Renderable(image=draw_text(
-                      "alsdkja~slçkdjaçs~ldkj", (150, 150)),
-                      pos=(300, 300)),
-                  )
+        Renderable(image=draw_text(
+            "alsdkja~slçkdjaçs~ldkj", (150, 150)),
+            pos=(300, 300)),
+    )
 
     world.create_entity(world,
-                  Velocity(x=0, y=0),
-                  Renderable(image=spaceships[10], pos=(137, 13)),
-                  )
+                        Velocity(x=0, y=0),
+                        Renderable(image=spaceships[10], pos=(137, 13)),
+                        )
 
     world.create_entity(world,
-                  ConstantVelocity(),
-                  Renderable(image=spaceships[8], pos=(50, 13)),
-                  )
+                        ConstantVelocity(),
+                        Renderable(image=spaceships[8], pos=(50, 13)),
+                        )
 
     world.create_entity(world,
-                  Renderable(image=load("assets/imgs/ui/grey.png"),
-                             pos=(250, 250)),
-                  Button(lambda: print("button"), "on")
-                  )
+                        Renderable(image=load("assets/imgs/ui/grey.png"),
+                                   pos=(250, 250)),
+                        Button(lambda: print("button"), "on")
+                        )
 
     render_processor = RenderProcessor(window=window)
 
@@ -80,7 +81,8 @@ def run():
 
     collision_processors = CollisionProcessor(type1=Bullet, type2=Enemy)
 
-    enemy_spawner_processor = EnemySpawnerProcessor(Enemy, spaceships[14], RESOLUTION)
+    enemy_spawner_processor = EnemySpawnerProcessor(
+        Enemy, spaceships[14], RESOLUTION)
 
     world.add_processor(render_processor)
     world.add_processor(movement_processor)
@@ -90,7 +92,6 @@ def run():
     world.add_processor(button_processor)
     world.add_processor(collision_processors)
     world.add_processor(enemy_spawner_processor)
-
 
     running = True
     while running:

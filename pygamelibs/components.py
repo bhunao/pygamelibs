@@ -22,8 +22,6 @@ class Renderable:
         if pos:
             if pos_type == "center":
                 self.rect.center = pos
-            # elif pos_type == "topleft":
-            #     self.rect.topleft = pos
             else:
                 setattr(self.rect, pos_type, pos)
 
@@ -48,6 +46,7 @@ class Button:
     action: Callable
     state: str = "on"
 
+
 @dataclass
 class Enemy:
     name: str = "enemy"
@@ -56,14 +55,9 @@ class Enemy:
 class Player:
     pass
 
+
 @dataclass
 class Bullet:
-    pass
-
-
-
-@dataclass
-class UIComponent:
     pass
 
 

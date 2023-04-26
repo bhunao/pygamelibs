@@ -1,4 +1,4 @@
-from random import choice, randint
+from random import randint
 from esper import Processor
 from pygame import Surface, key, display, event, time, mouse
 from pygame.locals import (
@@ -6,7 +6,9 @@ from pygame.locals import (
     K_w, K_a, K_s, K_d)
 
 from pygamelibs.components import (
-    AnimatedRenderable, BackgroundObject, Bullet, ConstantVelocity, KeyboardInput, Renderable, UIComponent, Velocity, Button)
+    AnimatedRenderable, BackgroundObject, Bullet, ConstantVelocity, KeyboardInput,
+    Renderable, Velocity, Button
+)
 
 
 class MovementProcessor(Processor):
@@ -19,14 +21,10 @@ class MovementProcessor(Processor):
         self._target = Velocity, Renderable
 
     def process(self):
-        # This will iterate over every Entity that has BOTH of these components:
         for ent, (vel, rend) in self.world.get_components(*self._target):
-            # Update the Renderable Component's position by it's Velocity:
             rend.rect.x += vel.x
             rend.rect.y += vel.y
 
-            # An example of keeping the sprite inside screen boundaries. Basically,
-            # adjust the position back inside screen boundaries if it tries to go outside:
             rend.rect.x = max(self.minx, rend.rect.x)
             rend.rect.y = max(self.miny, rend.rect.y)
             rend.rect.x = min(self.maxx - rend.rect.w, rend.rect.x)
@@ -87,9 +85,7 @@ class AnimatedRenderProcessor(Processor):
         self.clear_color = clear_color
 
     def process(self):
-        # Clear the window:
         self.window.fill(self.clear_color)
-        # This will iterate over every Entity that has this Component, and blit it:
         for ent, rend in self.world.get_component(AnimatedRenderable):
             self.window.blit(rend.images[rend.frame], (rend.x, rend.y))
 
@@ -98,7 +94,6 @@ class AnimatedRenderProcessor(Processor):
             rend.last_update = now
             old_frame = rend.frame
             rend.frame = rend.frame + 1 if old_frame < len(rend.images) else 0
-        # Flip the framebuffers
         display.flip()
 
 
@@ -156,11 +151,11 @@ class KeyboardInputProcessor(Processor):
                     pos = rend.rect.center
                     self.time["space"] = now
                     self.world.create_entity(
-                                  Renderable(image=self.bullet_sprite,
-                                             pos=pos),
-                                  ConstantVelocity(x=3, y=0),
-                                  Bullet()
-                                  )
+                        Renderable(image=self.bullet_sprite,
+                                   pos=pos),
+                        ConstantVelocity(x=3, y=0),
+                        Bullet()
+                    )
 
 
 class CollisionProcessor(Processor):
@@ -177,6 +172,7 @@ class CollisionProcessor(Processor):
                     self.world.delete_entity(ent2)
                     return
 
+
 class ButtonProcessor(Processor):
     def __init__(self) -> None:
         super().__init__()
@@ -189,7 +185,7 @@ class ButtonProcessor(Processor):
             if rend.rect.collidepoint(mouse_pos) and mouse_buttons[0]:
                 button.action()
 
-            
+
 class EnemySpawnerProcessor(Processor):
     def __init__(self, enemy, image, window_size, max_enemies=10) -> None:
         super().__init__()
@@ -204,18 +200,9 @@ class EnemySpawnerProcessor(Processor):
             self.world.create_entity(
                 self.EnemyComponent(),
                 Renderable(self.image,
-                            pos=(randint(0, self.window_size[0]),
+                           pos=(randint(0, self.window_size[0]),
                                 randint(0, self.window_size[1]))),
                 Velocity(randint(-2, 2), randint(1, 2)))
-
-class UIProcessor(Processor):
-    def __init__(self, ) -> None:
-        super().__init__()
-
-    def process(self, *args, **kwargs):
-        for ent, body in self.world.get_components(UIComponent):
-            # TODO: something for UI i guess...
-            pass
 
 
 class BackgroundProcessor(Processor):
